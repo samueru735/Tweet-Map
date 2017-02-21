@@ -49,6 +49,8 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="Tweet Map" HorizontalAlignment="Center" Margin="0 6" />
+        
+        
         <Maps:MapControl x:Name="mcTweetMap" Grid.Row="1"
                          Grid.ColumnSpan="2"
                          HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"
@@ -67,13 +69,36 @@
             Margin="20"
             Background="White"
             MinHeight="0"
-            Visibility="Collapsed"
+            Visibility="Collapsed"            
             >
             <ListBox x:Name="lbTweets"
                      ItemsSource="{Binding TweetList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ItemTemplate="{StaticResource TweetItemTemplate}"
-                     ItemContainerStyle="{StaticResource ListBoxWithPadding}"                     
+                     ItemContainerStyle="{StaticResource ListBoxWithPadding}"                       
                      />
+            <Grid 
+            x:Name="gridButtonCloseTweets"           
+            VerticalAlignment="Top"
+            HorizontalAlignment="Right"
+            Margin="0"                       
+            Tapped="gridButtonCloseTweets_Tapped"             
+               >
+                <Rectangle x:Name="rctCloseTweets"
+                     Fill="Red"
+                     Height="24"
+                     Width="24"  
+                     VerticalAlignment="Center"      
+                     />
+                <TextBlock Text="X"
+                       Foreground="White"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
+                       FontSize="32"
+                       FontWeight="Bold"  
+                       Height="34"
+                       Width="24" Margin="3,-11,0,0"
+                       />
+            </Grid>
         </Grid>
         <Grid 
             x:Name="gridButtonShowTweets"
@@ -83,8 +108,7 @@
             HorizontalAlignment="Right"
             Margin="20"                       
             Tapped="gridShowTweets_Tapped"        
-            Visibility="Collapsed"
-             
+            Visibility="Collapsed"             
                >
 
             <Ellipse x:Name="ellShowTweets"

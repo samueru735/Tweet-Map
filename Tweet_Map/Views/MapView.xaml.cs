@@ -91,8 +91,7 @@ namespace Tweet_Map.Views
             addMapIcon(args.Location);
             // mcTweetMap  create MapIcon and add it.
             reverseGeoCode(args.Location);            
-            gridButtonShowTweets.Visibility = Visibility.Visible;
-            gridTweetList.Visibility = Visibility.Visible;
+            gridButtonShowTweets.Visibility = Visibility.Visible;            
             locationService.UpdateLocation(args.Location);
             //locationService.Latitude = args.Location.Position.Latitude;
             //locationService.Longitude = args.Location.Position.Longitude;
@@ -147,14 +146,19 @@ namespace Tweet_Map.Views
         }
 
         private void gridShowTweets_Tapped(object sender, TappedRoutedEventArgs e)
-        {            
+        {                        
             model = (MapViewModel)ViewModel;
             model.UpdateLocation(locationService.Latitude, locationService.Longitude);            
             Debug.WriteLine("Time to show some tweets!");
             model.ShowTweets();
+            gridTweetList.Visibility = Visibility.Visible;
             lbTweets.ItemsSource = null;
 
         }
-     
+
+        private void gridButtonCloseTweets_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            gridTweetList.Visibility = Visibility.Collapsed;
+        }
     }
 }
