@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tweet_Map.Core.Services;
+using Windows.Devices.Geolocation;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Tweet_Map.LocationService))]
 namespace Tweet_Map
@@ -37,6 +38,12 @@ namespace Tweet_Map
             {
                 longitude = value;
             }
+        }
+
+        internal void UpdateLocation(Geopoint point)
+        {
+            latitude = point.Position.Latitude;
+            longitude = point.Position.Longitude;
         }
     }
 }

@@ -6,47 +6,51 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
-    xmlns:src="using:MvvmCross.WindowsUWP.Views"
+    xmlns:src="using:MvvmCross.WindowsUWP.Views"    
     mc:Ignorable="d">
 
-    <Page.Resources>
-        <Style x:Key="ListBoxNoPadding" TargetType="ListBoxItem">
+    <src:MvxWindowsPage.Resources>
+        <Style x:Key="ListBoxWithPadding" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
             <Setter Property="BorderThickness" Value="0,0"></Setter>
             <Setter Property="BorderBrush" Value="LightGray"></Setter>
             <Setter Property="Margin" Value="0"></Setter>
-            <Setter Property="Padding" Value="0"></Setter>
+            <Setter Property="Padding" Value="6, 6, 12, 6"></Setter>
         </Style>
         <DataTemplate x:Key="TweetItemTemplate">
             <Grid Margin="0, 5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <!--<Rectangle Fill="WhiteSmoke" Height="50" Width="50" Grid.Row="0" Grid.Column="0"  
-                         VerticalAlignment="Top" Margin="0,7,7,0" Grid.RowSpan="2"> 
-                        </Rectangle>-->
-                <TextBlock Text="{Binding User}" Grid.Row="0" Grid.Column="1" 
+                <TextBlock Text="{Binding User, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" 
                                  Foreground="{StaticResource ApplicationForegroundThemeBrush}" VerticalAlignment="Top" TextAlignment="Left"/>
-                <TextBlock Text="{Binding CreatedString}" Grid.Row="0" Grid.Column="2" 
-                                 Foreground="{StaticResource ApplicationForegroundThemeBrush}" VerticalAlignment="Top" TextAlignment="Right"/>
-                <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="CornflowerBlue" 
-                               Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+                <TextBlock Text="{Binding ChoppedText[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Foreground="CornflowerBlue" 
+                               Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top" />
+                <HyperlinkButton Content="{Binding UrlList[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" NavigateUri="{Binding UrlList[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
             </Grid>
         </DataTemplate>
-    </Page.Resources>
+    </src:MvxWindowsPage.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
         <TextBlock Text="Tweet Map" HorizontalAlignment="Center" Margin="0 6" />
         <Maps:MapControl x:Name="mcTweetMap" Grid.Row="1"
+                         Grid.ColumnSpan="2"
                          HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"
                          ZoomLevel="15"
                          MapRightTapped="mcTweetMap_MapRightTapped"                         
@@ -57,22 +61,24 @@
         <Grid
             x:Name="gridTweetList"
             Grid.Row="1"
+            Grid.Column="0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Margin="20"
             Background="White"
-            MinHeight="100"
+            MinHeight="0"
             Visibility="Collapsed"
             >
             <ListBox x:Name="lbTweets"
-                     ItemsSource="{Binding TweetList}"
+                     ItemsSource="{Binding TweetList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ItemTemplate="{StaticResource TweetItemTemplate}"
-                     ItemContainerStyle="{StaticResource ListBoxNoPadding}"
+                     ItemContainerStyle="{StaticResource ListBoxWithPadding}"                     
                      />
         </Grid>
         <Grid 
-            x:Name="gridShowTweets"
-            Grid.Row="1"            
+            x:Name="gridButtonShowTweets"
+            Grid.Row="1"  
+            Grid.Column="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
             Margin="20"                       

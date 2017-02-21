@@ -58,22 +58,22 @@ namespace Tweet_Map.Views
         {
             Geoposition position;
             position = await GetGeopositionAsync();
-            location.X = position.Coordinate.Point.Position.Latitude;
-            location.Y = position.Coordinate.Point.Position.Longitude;                        
+            locationService.UpdateLocation(position.Coordinate.Point);
+                                   
 
             // Debug.WriteLine("task: lat {0}, long {1}", location.X, location.Y);
             SetMapCenter();
         }
         private async void SetMapCenter()
         {
-            locationService.Latitude = location.X;
-            locationService.Longitude = location.Y;
+            //locationService.Latitude = location.X;
+            //locationService.Longitude = location.Y;
             try
             {
                 mcTweetMap.Center = new Geopoint(new Windows.Devices.Geolocation.BasicGeoposition
                 {
-                    Latitude = location.X,
-                    Longitude = location.Y
+                    Latitude = locationService.Latitude,
+                    Longitude = locationService.Longitude
                 });
                 // Debug.WriteLine("Center: lat {0}, long {1}", Location.X, Location.Y);
             }
@@ -90,9 +90,12 @@ namespace Tweet_Map.Views
             vibratePhone();
             addMapIcon(args.Location);
             // mcTweetMap  create MapIcon and add it.
-            reverseGeoCode(args.Location);
-            gridShowTweets.Visibility = Windows.UI.Xaml.Visibility.Visible;
+            reverseGeoCode(args.Location);            
+            gridButtonShowTweets.Visibility = Visibility.Visible;
             gridTweetList.Visibility = Visibility.Visible;
+            locationService.UpdateLocation(args.Location);
+            //locationService.Latitude = args.Location.Position.Latitude;
+            //locationService.Longitude = args.Location.Position.Longitude;
         }
 
         private void vibratePhone()
@@ -144,11 +147,13 @@ namespace Tweet_Map.Views
         }
 
         private void gridShowTweets_Tapped(object sender, TappedRoutedEventArgs e)
-        {
+        {            
             model = (MapViewModel)ViewModel;
-            model.UpdateLocation(locationService.Latitude, locationService.Longitude);
-            Debug.WriteLine("Time to show some tweets! {0}");
+            model.UpdateLocation(locationService.Latitude, locationService.Longitude);            
+            Debug.WriteLine("Time to show some tweets!");
             model.ShowTweets();
+            lbTweets.ItemsSource = null;
+
         }
      
     }

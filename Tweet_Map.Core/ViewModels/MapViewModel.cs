@@ -14,6 +14,7 @@ namespace Tweet_Map.Core.ViewModels
     public class MapViewModel 
         : MvxViewModel
     {
+
         public MapViewModel()
         {
             DependencyService.Get<ILocationService>();
@@ -49,6 +50,7 @@ namespace Tweet_Map.Core.ViewModels
             set { lng = value; RaisePropertyChanged(() => Lng); }
         }
 
+
         public void UpdateLocation(double latitude, double longitude)
         {
             lat = latitude;
@@ -57,7 +59,7 @@ namespace Tweet_Map.Core.ViewModels
 
         public async void ShowTweets()
         {
-            
+            TweetList.Clear();
             TweetList = await DependencyService.Get<ITweetService>().GetTweetsFromLocation(lat, lng, 5);
             foreach (var tweet in tweetList)
             {
@@ -67,7 +69,8 @@ namespace Tweet_Map.Core.ViewModels
                     tweet.Text,
                     tweet.Place,
                     tweet.Lat,
-                    tweet.Lng);
+                    tweet.Lng
+                    );
             }
         }
 

@@ -85,17 +85,20 @@ namespace Tweet_Map
 
             if (searchResponse != null && searchResponse.Statuses != null)
             {
+                tweetList.Clear();
                 foreach (var tweet in searchResponse.Statuses)
                 {
-                    tweetList.Add(new Tweet
+                    Tweet tweetToAdd = new Tweet
                     {
                         User = tweet.User.ScreenNameResponse,
                         Text = tweet.Text,
                         Place = tweet.Place.Name,
                         Lat = tweet.Coordinates.Latitude,
-                        Lng = tweet.Coordinates.Longitude                        
-                    }
-                    );
+                        Lng = tweet.Coordinates.Longitude
+                    };
+                    tweetToAdd.ExtractHyperlink();
+                    tweetToAdd.SplitText();
+                    tweetList.Add(tweetToAdd);
                 }
             }
             return tweetList;
