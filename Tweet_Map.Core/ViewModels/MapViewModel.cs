@@ -49,7 +49,13 @@ namespace Tweet_Map.Core.ViewModels
             get { return lng; }
             set { lng = value; RaisePropertyChanged(() => Lng); }
         }
+        private int radius = 5;
 
+        public int Radius
+        {
+            get { return radius; }
+            set { radius = value; RaisePropertyChanged(() => Radius); }
+        }
 
         public void UpdateLocation(double latitude, double longitude)
         {
@@ -60,7 +66,7 @@ namespace Tweet_Map.Core.ViewModels
         public async void ShowTweets()
         {
             TweetList.Clear();
-            TweetList = await DependencyService.Get<ITweetService>().GetTweetsFromLocation(lat, lng, 5);
+            TweetList = await DependencyService.Get<ITweetService>().GetTweetsFromLocation(lat, lng, radius);
             foreach (var tweet in tweetList)
             {
                 Debug.WriteLine(

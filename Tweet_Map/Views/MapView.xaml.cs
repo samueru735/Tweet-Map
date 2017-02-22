@@ -85,16 +85,13 @@ namespace Tweet_Map.Views
             }
         }
 
-        private void mcTweetMap_MapRightTapped(Windows.UI.Xaml.Controls.Maps.MapControl sender, Windows.UI.Xaml.Controls.Maps.MapRightTappedEventArgs args)
+        private void mcTweetMap_MapRightTapped(MapControl sender, MapRightTappedEventArgs args)
         {
             vibratePhone();
             addMapIcon(args.Location);
-            // mcTweetMap  create MapIcon and add it.
             reverseGeoCode(args.Location);            
-            gridButtonShowTweets.Visibility = Visibility.Visible;            
+            gridBtnOptions.Visibility = Visibility.Visible;            
             locationService.UpdateLocation(args.Location);
-            //locationService.Latitude = args.Location.Position.Latitude;
-            //locationService.Longitude = args.Location.Position.Longitude;
         }
 
         private void vibratePhone()
@@ -145,15 +142,22 @@ namespace Tweet_Map.Views
             mcTweetMap.MapElements.Add(mapIcon);
         }
 
-        private void gridShowTweets_Tapped(object sender, TappedRoutedEventArgs e)
-        {                        
-            model = (MapViewModel)ViewModel;
-            model.UpdateLocation(locationService.Latitude, locationService.Longitude);            
-            Debug.WriteLine("Time to show some tweets!");
-            model.ShowTweets();
-            gridTweetList.Visibility = Visibility.Visible;
-            lbTweets.ItemsSource = null;
 
+        private void gridBtnOptions_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void gridBtnShowTweets_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            model = (MapViewModel)ViewModel;
+            model.UpdateLocation(locationService.Latitude, locationService.Longitude);
+            Debug.WriteLine("Time to show some tweets!");
+            model.ShowTweets();            
+            lbTweets.ItemsSource = null;
+            gridTweetList.Visibility = Visibility.Visible;
+
+            foOptions.Hide();
         }
 
         private void gridButtonCloseTweets_Tapped(object sender, TappedRoutedEventArgs e)

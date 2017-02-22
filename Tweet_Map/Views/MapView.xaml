@@ -17,6 +17,7 @@
             <Setter Property="Margin" Value="0"></Setter>
             <Setter Property="Padding" Value="6, 6, 12, 6"></Setter>
         </Style>
+
         <DataTemplate x:Key="TweetItemTemplate">
             <Grid Margin="0, 5">
                 <Grid.RowDefinitions>
@@ -40,17 +41,34 @@
         </DataTemplate>
     </src:MvxWindowsPage.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <!-- VisualState to be triggered when the
+                             window width is >=720 effective pixels. -->
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="adaptiveColumn.Width" Value="*"/>
+                        <Setter Target="adaptiveColumn.MinWidth" Value="288"/>
+
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition x:Name="adaptiveColumn" Width="2*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="Tweet Map" HorizontalAlignment="Center" Margin="0 6" />
-        
-        
+        <TextBlock x:Name="tbTitle" Text="Tweet Map" HorizontalAlignment="Center" Margin="0 6"
+                   >
+        </TextBlock>
         <Maps:MapControl x:Name="mcTweetMap" Grid.Row="1"
                          Grid.ColumnSpan="2"
                          HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"
@@ -58,7 +76,6 @@
                          MapRightTapped="mcTweetMap_MapRightTapped"                         
                          MapServiceToken="TKNNwCfqKEVRd7b13U9G~x3WxAeZ1jIkj-39Fg7VGjQ~AjfgkhjSMEbZCSGEmDd0sqdQtKE9aq-XLyF5XYWHk7NIVq66fIcP0M1sXvL4HABE"
                          >
-
         </Maps:MapControl>
         <Grid
             x:Name="gridTweetList"
@@ -66,16 +83,17 @@
             Grid.Column="0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Margin="20"
+            Margin="10"
             Background="White"
             MinHeight="0"
-            Visibility="Collapsed"            
+            Visibility="Collapsed"                     
             >
             <ListBox x:Name="lbTweets"
                      ItemsSource="{Binding TweetList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ItemTemplate="{StaticResource TweetItemTemplate}"
-                     ItemContainerStyle="{StaticResource ListBoxWithPadding}"                       
-                     />
+                     ItemContainerStyle="{StaticResource ListBoxWithPadding}"                             
+                >
+            </ListBox>
             <Grid 
             x:Name="gridButtonCloseTweets"           
             VerticalAlignment="Top"
@@ -100,40 +118,107 @@
                        />
             </Grid>
         </Grid>
+
         <Grid 
-            x:Name="gridButtonShowTweets"
+            x:Name="gridBtnOptions"
             Grid.Row="1"  
             Grid.Column="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
             Margin="20"                       
-            Tapped="gridShowTweets_Tapped"        
+            Tapped="gridBtnOptions_Tapped"        
             Visibility="Collapsed"             
                >
+            <FlyoutBase.AttachedFlyout>
+                <Flyout Placement="Top"
+                        x:Name="foOptions">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="ScrollViewer.ZoomMode" Value="Enabled"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Margin" Value="0,112,0,0"/>
+                            
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
 
-            <Ellipse x:Name="ellShowTweets"
-                     Fill="#FF288DDF"
-                     Height="84"
-                     Width="84"                         
-                     />
-            <StackPanel VerticalAlignment="Center"
+                    <Grid             
+                            Grid.Row="1"  
+                            Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"                                          
+                               >
+                        <Rectangle 
+                                 Fill="#FF288DDF"
+                                 Height="220"
+                                 Width="84"  
+                                 RadiusX="45"   
+                                 RadiusY="45"
+                                 />
+                        <StackPanel
+                            Padding="0,24,0,0"
+                            VerticalAlignment="Stretch">
+                            <TextBlock HorizontalAlignment="Center" Text="Radius" Foreground="White"/>
+                            <Slider Value="{Binding Radius, Mode=TwoWay}" Minimum="0" Maximum="100" SmallChange="1" Width="80"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Radius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           HorizontalAlignment="Center" Foreground="White" />
+                                <TextBlock HorizontalAlignment="Center" Text=" km" Foreground="White" />
+                            </StackPanel>
+                            <Grid Margin="0,0,0,-140"
+                                  x:Name="gridBtnShowTweets"
+                                  Tapped="gridBtnShowTweets_Tapped">
+                                <Ellipse 
+                                     Fill="#FF299DFF"
+                                     Height="84"
+                                     Width="84"                         
+                                     />
+                                <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center">
-                <TextBlock Text="Show"
+
+                                    <TextBlock Text="Show"
                        Foreground="White"
                        HorizontalAlignment="Center"
                        FontWeight="Bold"
                        FontSize="20"
                            
                        />
-                <TextBlock Text="Tweets"
+                                    <TextBlock Text="Tweets"
                        Foreground="White"                       
                        HorizontalAlignment="Center"
                        FontWeight="Bold"
                        FontSize="20"
                        />
-            </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            
+                        </StackPanel>
+    
+                    </Grid>
+
+                </Flyout>
+            </FlyoutBase.AttachedFlyout>
+            <Ellipse x:Name="ellShowTweets"
+                     Fill="#FF288DDF"
+                     Height="84"
+                     Width="84"                         
+                     />
+
+
+                    <TextBlock Text="+"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       TextLineBounds="TrimToCapHeight"
+                       FontSize="120"
+                       Height="100"    
+                       />
+
+            </Grid>
 
         </Grid>
 
-    </Grid>
 </src:MvxWindowsPage>
