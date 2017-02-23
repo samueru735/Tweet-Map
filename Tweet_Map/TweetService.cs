@@ -69,16 +69,26 @@ namespace Tweet_Map
             return tweetList;
         }
 
-        public async Task<List<Tweet>> GetTweetsFromLocation(double lat, double lng, int radius)
+        public async Task<List<Tweet>> GetTweetsFromLocation(double lat, double lng, int radius, bool allowRetweet, int maxTweets, bool showRecent)
         {
+            string query = "";
+            ResultType resultType = ResultType.Recent;
+
+            if (allowRetweet)
+                query = "%20";
+            else
+                query = "%20 -RT";
+            if (!showRecent)
+                resultType = ResultType.Mixed;
+
             var twitterCtx = new TwitterContext(auth);
 
             var searchResponse = await
                 (from search in twitterCtx.Search
-                 where search.Type == SearchType.Search && search.Query == "%20 -RT"
+                 where search.Type == SearchType.Search && search.Query == query
                     && search.GeoCode == string.Format("{0},{1},{2}km", lat, lng, radius)
-                    && search.ResultType == ResultType.Recent
-                    && search.Count == 10
+                    && search.ResultType == resultType
+                    && search.Count == maxTweets
                     //&& search.SearchLanguage == "nl"
                  select search)
                  .SingleOrDefaultAsync();

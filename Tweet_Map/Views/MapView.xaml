@@ -17,7 +17,7 @@
             <Setter Property="Margin" Value="0"></Setter>
             <Setter Property="Padding" Value="6, 6, 12, 6"></Setter>
         </Style>
-
+        
         <DataTemplate x:Key="TweetItemTemplate">
             <Grid Margin="0, 5">
                 <Grid.RowDefinitions>
@@ -32,11 +32,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding User, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" 
-                                 Foreground="{StaticResource ApplicationForegroundThemeBrush}" VerticalAlignment="Top" TextAlignment="Left"/>
-                <TextBlock Text="{Binding ChoppedText[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Foreground="CornflowerBlue" 
+                           Opacity="1" Foreground="{StaticResource ApplicationForegroundThemeBrush}" VerticalAlignment="Top" TextAlignment="Left"/>
+                <TextBlock Text="{Binding ChoppedText[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"
+                           Opacity="1" Foreground="CornflowerBlue" 
                                Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top" />
                 <HyperlinkButton Content="{Binding UrlList[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" NavigateUri="{Binding UrlList[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+                                 Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+                                 Opacity="1" VerticalAlignment="Top"/>
             </Grid>
         </DataTemplate>
     </src:MvxWindowsPage.Resources>
@@ -47,14 +49,37 @@
                     <VisualState.StateTriggers>
                         <!-- VisualState to be triggered when the
                              window width is >=720 effective pixels. -->
+                        <AdaptiveTrigger MinWindowWidth="240" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        
+                        <Setter Target="adaptiveColumn.MaxWidth" Value="240"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <!-- VisualState to be triggered when the
+                             window width is >=720 effective pixels. -->
                         <AdaptiveTrigger MinWindowWidth="720" />
                     </VisualState.StateTriggers>
 
                     <VisualState.Setters>
-                        <Setter Target="adaptiveColumn.Width" Value="*"/>
-                        <Setter Target="adaptiveColumn.MinWidth" Value="288"/>
-
+                        <Setter Target="adaptiveColumn.Width" Value="1.5*"/>
+                        <Setter Target="adaptiveColumn.MinWidth" Value="240"/>
+                        <Setter Target="adaptiveColumn.MaxWidth" Value="288"/>
                     </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                    <!-- VisualState to be triggered when the
+                             window width is >=720 effective pixels. -->
+                    <AdaptiveTrigger MinWindowWidth="1152" />
+                </VisualState.StateTriggers>
+
+                <VisualState.Setters>
+                    <Setter Target="adaptiveColumn.Width" Value="*"/>
+                    <Setter Target="adaptiveColumn.MinWidth" Value="288"/>
+                </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
@@ -66,9 +91,15 @@
             <ColumnDefinition x:Name="adaptiveColumn" Width="2*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="tbTitle" Text="Tweet Map" HorizontalAlignment="Center" Margin="0 6"
-                   >
-        </TextBlock>
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+            <StackPanel.Background>
+                <SolidColorBrush Color="#F2F2F2" Opacity=".7"/>
+            </StackPanel.Background>
+            <TextBlock x:Name="tbTitle" Text="Tweet Map" Margin="0 2" HorizontalAlignment="Center"
+                   />
+
+        </StackPanel>
+        
         <Maps:MapControl x:Name="mcTweetMap" Grid.Row="1"
                          Grid.ColumnSpan="2"
                          HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"
@@ -83,40 +114,54 @@
             Grid.Column="0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
-            Margin="10"
-            Background="White"
-            MinHeight="0"
-            Visibility="Collapsed"                     
+            Margin="10"            
+            MinHeight="0"            
+            Visibility="Collapsed"      
+            Padding="0,24,0,0"
             >
+            <Grid.Background>
+                <SolidColorBrush Color="#F2F2F2" Opacity=".7"/>
+            </Grid.Background>
             <ListBox x:Name="lbTweets"
                      ItemsSource="{Binding TweetList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ItemTemplate="{StaticResource TweetItemTemplate}"
                      ItemContainerStyle="{StaticResource ListBoxWithPadding}"                             
                 >
+                <ListBox.Background>
+                    <SolidColorBrush Color="#F2F2F2" Opacity=".6"/>
+                </ListBox.Background>
+                
             </ListBox>
             <Grid 
             x:Name="gridButtonCloseTweets"           
             VerticalAlignment="Top"
             HorizontalAlignment="Right"
-            Margin="0"                       
-            Tapped="gridButtonCloseTweets_Tapped"             
+            Margin="0,-24,0,0"                       
+            Tapped="gridButtonCloseTweets_Tapped"   
+            Background="Black"        
+            Opacity=".9"
                >
-                <Rectangle x:Name="rctCloseTweets"
+                <ContentControl Name="WindowContent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    <Rectangle x:Name="rctCloseTweets"
                      Fill="Red"
-                     Height="24"
-                     Width="24"  
-                     VerticalAlignment="Center"      
+                     HorizontalAlignment="Stretch" 
+                     VerticalAlignment="Stretch"      
                      />
-                <TextBlock Text="X"
-                       Foreground="White"
-                       VerticalAlignment="Top"
-                       HorizontalAlignment="Center"
-                       FontSize="32"
-                       FontWeight="Bold"  
-                       Height="34"
-                       Width="24" Margin="3,-11,0,0"
-                       />
+                </ContentControl>
+                <StackPanel VerticalAlignment="Center"
+                       >
+                    <TextBlock Text="X"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="36"
+                           Foreground="White"
+                           Width="48"
+                           FontWeight="Bold"                                   
+                           TextAlignment="Center"
+                           />
+                </StackPanel>
             </Grid>
+
         </Grid>
 
         <Grid 
@@ -125,9 +170,9 @@
             Grid.Column="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
-            Margin="20"                       
-            Tapped="gridBtnOptions_Tapped"        
-            Visibility="Collapsed"             
+            Margin="20"                                        
+            Visibility="Collapsed"       
+            Tapped="gridBtnOptions_Tapped"  
                >
             <FlyoutBase.AttachedFlyout>
                 <Flyout Placement="Top"
@@ -138,76 +183,123 @@
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="BorderBrush" Value="Transparent"/>
                             <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Margin" Value="0,112,0,0"/>
-                            
+                            <Setter Property="Margin" Value="12,112,0,0"/>
+                            <Setter Property="Opacity" Value=".90"/>
+
                         </Style>
                     </Flyout.FlyoutPresenterStyle>
-
                     <Grid             
                             Grid.Row="1"  
                             Grid.Column="1"
                             VerticalAlignment="Bottom"
-                            HorizontalAlignment="Right"                                          
+                            HorizontalAlignment="Right"                        
                                >
                         <Rectangle 
                                  Fill="#FF288DDF"
-                                 Height="220"
-                                 Width="84"  
+                                 Height="360"
+                                 Width="200"  
                                  RadiusX="45"   
                                  RadiusY="45"
                                  />
-                        <StackPanel
-                            Padding="0,24,0,0"
-                            VerticalAlignment="Stretch">
-                            <TextBlock HorizontalAlignment="Center" Text="Radius" Foreground="White"/>
-                            <Slider Value="{Binding Radius, Mode=TwoWay}" Minimum="0" Maximum="100" SmallChange="1" Width="80"/>
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center">
-                                <TextBlock Text="{Binding Radius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                           HorizontalAlignment="Center" Foreground="White" />
-                                <TextBlock HorizontalAlignment="Center" Text=" km" Foreground="White" />
+                        <Grid
+                            Padding="0,12,0,0"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Center"
+                            >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock HorizontalAlignment="Center" Text="Radius :" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Radius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" />
+                                    <TextBlock HorizontalAlignment="Center" Text=" km" Foreground="White" FontWeight="Bold" />
+                                </StackPanel>
+
+                                <Slider Value="{Binding Radius, Mode=TwoWay}" Minimum="0" Maximum="100" SmallChange="1" Width="180"/>
+
+                                <ToggleSwitch x:Name="toggleSwitch"  HorizontalAlignment="Center" 
+                                          Foreground="White" IsOn="{Binding AllowRetweet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  >
+                                    <ToggleSwitch.Header >
+                                        <TextBlock Text="Show retweets" Foreground="white" FontWeight="Bold"/>
+                                    </ToggleSwitch.Header>
+                                </ToggleSwitch>
+                                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12">
+                                    <TextBlock HorizontalAlignment="Center" Text="Max # of tweets :" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding MaxTweets, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           HorizontalAlignment="Center" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                                <Slider Value="{Binding MaxTweets, Mode=TwoWay}" Minimum="5" Maximum="100" SmallChange="5" Width="180"/>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton GroupName="show" IsChecked="{Binding ShowRecent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  RenderTransformOrigin=".23,1">
+                                        <RadioButton.RenderTransform>
+                                            <CompositeTransform ScaleX="-1"/>
+                                        </RadioButton.RenderTransform>
+                                        <RadioButton.Content>
+                                            <TextBlock Text="Recent" Margin="-35,0,0,0" Foreground="White" >
+                                                <TextBlock.RenderTransform>
+                                                    <CompositeTransform ScaleX="-1"/>
+                                                </TextBlock.RenderTransform>
+                                            </TextBlock>
+                                        </RadioButton.Content>
+                                    </RadioButton>
+                                    <RadioButton GroupName="show" IsChecked="{Binding ShowMixed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Mixed" Foreground="White" />
+                                </StackPanel>
+
                             </StackPanel>
-                            <Grid Margin="0,0,0,-140"
-                                  x:Name="gridBtnShowTweets"
-                                  Tapped="gridBtnShowTweets_Tapped">
-                                <Ellipse 
+
+                            <Grid                                 
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,0,-0"
+                                x:Name="gridBtnShowTweets"
+                                Tapped="gridBtnShowTweets_Tapped"
+                                >
+                                <Rectangle 
+                                    VerticalAlignment="Top"
+                                     Fill="#FF299DFF"
+                                     Height="42"
+                                     Width="200"    
+                                     />
+                                <Rectangle 
                                      Fill="#FF299DFF"
                                      Height="84"
-                                     Width="84"                         
+                                     Width="200"    
+                                     RadiusX="45"   
+                                     RadiusY="45"
                                      />
-                                <StackPanel VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
-
-                                    <TextBlock Text="Show"
-                       Foreground="White"
-                       HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="20"
-                           
-                       />
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="Show"                                               
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       FontWeight="Bold"
+                                       FontSize="20"                           
+                                       />
                                     <TextBlock Text="Tweets"
-                       Foreground="White"                       
-                       HorizontalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="20"
-                       />
+                                       Foreground="White"                       
+                                       HorizontalAlignment="Center"
+                                       FontWeight="Bold"
+                                       FontSize="20"
+                                       />
                                 </StackPanel>
                             </Grid>
-                            
-                        </StackPanel>
-    
+
+                        </Grid>
+
                     </Grid>
 
                 </Flyout>
             </FlyoutBase.AttachedFlyout>
-            <Ellipse x:Name="ellShowTweets"
+            <Rectangle x:Name="ellShowTweets"
                      Fill="#FF288DDF"
                      Height="84"
-                     Width="84"                         
+                     Width="200"   
+                     RadiusX="45"
+                     RadiusY="45"
+                     Opacity=".6"
                      />
 
 
-                    <TextBlock Text="+"
+            <TextBlock Text="+"
                        Foreground="White"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -217,8 +309,8 @@
                        Height="100"    
                        />
 
-            </Grid>
-
         </Grid>
+
+    </Grid>
 
 </src:MvxWindowsPage>

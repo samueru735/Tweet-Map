@@ -13,6 +13,6 @@ namespace Tweet_Map.Core.Services
 
         Task<List<Tweet>> GetTweets();
 
-        Task<List<Tweet>> GetTweetsFromLocation(double lat, double lng, int radius);
+        Task<List<Tweet>> GetTweetsFromLocation(double lat, double lng, int radius, bool allowRetweet, int maxTweets, bool showRecent);
     }
 }

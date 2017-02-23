@@ -103,7 +103,10 @@ namespace Tweet_Map.Views
             }
             catch (System.TypeLoadException)
             {
-                Debug.WriteLine("Vibration not supported");
+                //Debug.WriteLine("Vibration not supported");
+            }
+            catch (System.Exception) { 
+                //ignore 
             }
         }
 

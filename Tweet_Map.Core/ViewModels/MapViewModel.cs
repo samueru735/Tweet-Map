@@ -49,6 +49,7 @@ namespace Tweet_Map.Core.ViewModels
             get { return lng; }
             set { lng = value; RaisePropertyChanged(() => Lng); }
         }
+
         private int radius = 5;
 
         public int Radius
@@ -56,6 +57,37 @@ namespace Tweet_Map.Core.ViewModels
             get { return radius; }
             set { radius = value; RaisePropertyChanged(() => Radius); }
         }
+
+        private int maxTweets = 10;
+
+        public int MaxTweets
+        {
+            get { return maxTweets; }
+            set { maxTweets = value; RaisePropertyChanged(() => MaxTweets); }
+        }
+
+        private bool allowRetweet = false;
+
+        public bool AllowRetweet
+        {
+            get { return allowRetweet; }
+            set { allowRetweet = value; RaisePropertyChanged(() => AllowRetweet); }
+        }
+
+        private bool showRecent = true;
+        public bool ShowRecent
+        {
+            get { return showRecent; }
+            set { showRecent = value; RaisePropertyChanged(() => ShowRecent); }
+        }
+
+        private bool showMixed = false;
+        public bool ShowMixed
+        {
+            get { return showMixed; }
+            set { showMixed = value; RaisePropertyChanged(() => ShowMixed); }
+        }
+
 
         public void UpdateLocation(double latitude, double longitude)
         {
@@ -66,7 +98,8 @@ namespace Tweet_Map.Core.ViewModels
         public async void ShowTweets()
         {
             TweetList.Clear();
-            TweetList = await DependencyService.Get<ITweetService>().GetTweetsFromLocation(lat, lng, radius);
+            Debug.WriteLine("-- Retweets allowed? {0}", AllowRetweet);
+            TweetList = await DependencyService.Get<ITweetService>().GetTweetsFromLocation(lat, lng, radius, allowRetweet, maxTweets, showRecent);
             foreach (var tweet in tweetList)
             {
                 Debug.WriteLine(
