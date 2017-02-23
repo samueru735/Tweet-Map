@@ -1,3 +1,3 @@
 # Tweet-Map
 
-UWP app to show an interactive map that displays tweets from the area.
+UWP app showing an interactive map to display tweets from the area.
